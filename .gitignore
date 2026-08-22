@@ -1,0 +1,51 @@
+# Never let a statement anywhere near this repository.
+# These patterns are deliberately broad: the cost of ignoring a file you wanted
+# is one line in `git add -f`, and the cost of committing one you did not is
+# permanent, because git keeps history forever.
+*.csv
+*.xls
+*.xlsx
+*.xlsm
+*.pdf
+*.ofx
+*.qif
+Statement*
+statement*
+*_Statement_*
+*Locked*
+*locked*
+
+# Build archives and local scratch
+*.zip
+*.bak
+*.orig
+*.log
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Working documents and notes. These quote real figures from real statements
+# while they are being written, so they are excluded by type rather than by
+# remembering to check each one. Word's lock files (~$...) go too.
+*.docx
+*.doc
+*.pptx
+*.rtf
+~$*
+
+# A repository GitHub Desktop once created by mistake inside this folder,
+# because its dialog appends the repository name to the path you give it.
+my-spending-pattern/
+
+# Personal convenience files, not part of the project.
+# The launcher is a Windows shortcut for opening the app from disk; the root
+# .htaccess belongs to the dsandai.com domain rather than to this app.
+Open My Spending Pattern.bat
+root-htaccess-for-dsandai.txt
+
+# Notes to myself rather than documentation of the project: launch costs and
+# app-store pricing, my own cPanel runbook, and where my branding lives. None
+# of it helps someone reading or running the code, so it stays local.
+PUBLISHING.md
+DEPLOY-cPanel.md
+EDITING.md

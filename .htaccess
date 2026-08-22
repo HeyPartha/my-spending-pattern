@@ -1,0 +1,103 @@
+# My Spending Pattern — Apache / cPanel configuration
+#
+# Upload this file alongside index.html. Everything here is optional in the
+# sense that the site loads without it, but three of these rules matter:
+#
+#   * the .webmanifest MIME type, or the browser refuses to install the app
+#   * HTTPS, or the service worker never registers and offline never works
+#   * no-cache on sw.js, or an old service worker keeps serving an old app to
+#     returning visitors for as long as its cache header says — which is the
+#     classic "I uploaded a fix and nobody can see it" problem
+
+# ---------------------------------------------------------------- HTTPS
+# Redirect http -> https. Turn this on only AFTER the certificate is issued,
+# otherwise visitors get a security warning instead of a website.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ---------------------------------------------------------------- MIME types
+<IfModule mod_mime.c>
+  AddType application/manifest+json  .webmanifest
+  AddType image/svg+xml              .svg
+  AddType text/javascript            .js
+  AddType text/javascript            .mjs
+</IfModule>
+
+# ---------------------------------------------------------------- compression
+# The whole app is text. Gzip takes it from about 150 KB to roughly 40 KB.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript \
+    application/javascript application/json application/manifest+json \
+    image/svg+xml text/plain
+</IfModule>
+
+# ---------------------------------------------------------------- caching
+<IfModule mod_expires.c>
+  ExpiresActive On
+  # Icons and images change rarely.
+  ExpiresByType image/png              "access plus 30 days"
+  ExpiresByType image/svg+xml          "access plus 30 days"
+  # Code: a week is plenty, and the service worker updates it sooner anyway.
+  ExpiresByType text/css               "access plus 7 days"
+  ExpiresByType text/javascript        "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  # The page itself must not be cached hard, or a new version is invisible.
+  ExpiresByType text/html              "access plus 0 seconds"
+</IfModule>
+
+# The service worker and the manifest are always fetched fresh. Without this
+# an update can take days to reach someone who has already visited.
+<FilesMatch "^(sw\.js|manifest\.webmanifest)$">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </IfModule>
+</FilesMatch>
+
+# ---------------------------------------------------------------- security
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "no-referrer"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "geolocation=(), camera=(), microphone=()"
+
+  # The privacy claim, enforced by the browser rather than promised in prose.
+  # This policy blocks the page from loading any script, style, font or image
+  # from anywhere but this site, and `connect-src 'self'` stops it making a
+  # network request to a third party at all. If someone ever adds an analytics
+  # snippet by accident, the browser refuses to run it.
+  #
+  # NOTE: if you switch feedback to a form service (see assets/feedback.js),
+  # add that host to connect-src or the send will be blocked:
+  #   connect-src 'self' https://formspree.io;
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'self'; frame-ancestors 'self'"
+</IfModule>
+
+# ---------------------------------------------------------------- tidiness
+Options -Indexes
+
+# The notes that ship with the app are for whoever maintains it, not for
+# visitors. They hold no secrets -- there are none in this app to hold -- but
+# there is no reason to serve a stranger a document describing how the site is
+# put together and where its configuration lives. Same for editor backups and
+# anything beginning with a dot.
+<FilesMatch "\.(md|txt|bak|old|orig|log|zip|py|sh|ini|yml|yaml)$">
+  Require all denied
+</FilesMatch>
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+# Older Apache (pre-2.4) uses the other spelling; harmless if both are present.
+<IfModule !mod_authz_core.c>
+  <FilesMatch "\.(md|txt|bak|old|orig|log|zip|py|sh|ini|yml|yaml)$">
+    Order allow,deny
+    Deny from all
+  </FilesMatch>
+</IfModule>
+DirectoryIndex index.html
+ErrorDocument 404 /index.html

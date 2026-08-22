@@ -1,0 +1,299 @@
+/* My Spending Pattern — one stylesheet, mobile first.
+ *
+ * Colours are the validated palette: three categorical slots, stepped
+ * separately for light and dark rather than flipped. Dark is declared under
+ * both the OS media query and the theme attribute so the in-page toggle wins
+ * either way.
+ */
+:root {
+  color-scheme: light;
+  --page:#f9f9f7; --surface-1:#fcfcfb; --surface-2:#f2f1ee;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a;
+  --good:#0ca30c; --warning:#eda100; --critical:#d03b3b;
+  --shadow:0 1px 2px rgba(11,11,11,.05), 0 8px 24px rgba(11,11,11,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page:#0d0d0d; --surface-1:#1a1a19; --surface-2:#222220;
+    --text-primary:#fff; --text-secondary:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
+    --good:#0ca30c; --warning:#fab219; --critical:#e66767;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page:#0d0d0d; --surface-1:#1a1a19; --surface-2:#222220;
+  --text-primary:#fff; --text-secondary:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
+  --good:#0ca30c; --warning:#fab219; --critical:#e66767;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--page); color:var(--text-primary);
+  font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{margin:0;font-weight:650;letter-spacing:-.015em}
+a{color:var(--series-1)}
+button,select,input{font:inherit}
+.muted{color:var(--muted);font-size:13px;margin:6px 0 0}
+
+/* ---------- shell ---------- */
+header{
+  position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--page) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--border);
+}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 16px;
+  max-width:1180px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;
+  letter-spacing:-.02em;white-space:nowrap;
+  /* It is a <button> so it is reachable by keyboard, but it has to look like
+     the title it replaced -- a styled button in the corner reads as an action
+     nobody wants to take. */
+  border:0;background:none;color:inherit;font-family:inherit;padding:0;
+  cursor:pointer;-webkit-tap-highlight-color:transparent}
+.brand:hover{opacity:.75}
+.brand:focus-visible{outline:2px solid var(--series-1);outline-offset:3px;border-radius:6px}
+.brand .dot{width:22px;height:22px;border-radius:7px;flex:none;
+  background:linear-gradient(135deg,var(--series-1),var(--series-3))}
+.spacer{flex:1}
+.credit .build{opacity:.55;font-size:11px;margin-left:8px;
+  font-variant-numeric:tabular-nums}
+.btn{border:1px solid var(--border);background:var(--surface-1);color:var(--text-primary);
+  border-radius:9px;padding:7px 13px;cursor:pointer;font-size:13.5px;font-weight:550;
+  transition:background .12s,border-color .12s}
+.btn:hover{background:var(--surface-2)}
+.btn.pri{background:var(--series-1);border-color:var(--series-1);color:#fff}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn.sm{padding:4px 10px;font-size:12.5px}
+.btn.ghost{background:transparent}
+.iconbtn{border:1px solid var(--border);background:var(--surface-1);border-radius:9px;
+  width:34px;height:34px;cursor:pointer;color:var(--text-secondary);flex:none}
+
+main{max-width:1180px;margin:0 auto;padding:16px 16px 72px}
+
+/* ---------- hero ---------- */
+.hero{padding:34px 0 22px;text-align:center}
+.hero h1{font-size:clamp(27px,6vw,44px);line-height:1.1;letter-spacing:-.03em}
+.hero p{color:var(--text-secondary);max-width:60ch;margin:12px auto 0;font-size:16px}
+.hero .cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.privacy{display:inline-flex;align-items:center;gap:7px;margin-top:16px;
+  font-size:12.5px;color:var(--muted);border:1px solid var(--border);
+  border-radius:99px;padding:5px 13px;background:var(--surface-1)}
+.privacy b{color:var(--text-secondary);font-weight:600}
+
+/* ---------- drop zone ---------- */
+.drop{border:1.5px dashed var(--axis);border-radius:14px;background:var(--surface-1);
+  padding:26px 18px;text-align:center;transition:border-color .15s,background .15s}
+.drop.over{border-color:var(--series-1);background:var(--surface-2)}
+.drop h3{font-size:16px}
+.drop p{margin:6px 0 0;color:var(--muted);font-size:13px}
+.drop .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+input[type=file]{display:none}
+/* Once a statement is loaded the drop zone stops being the point of the page,
+   so it folds down to a single line and gives the room back to the analysis. */
+.drop.mini{padding:9px 12px;text-align:left;border-style:solid;display:flex;
+  align-items:center;gap:10px;justify-content:space-between}
+.drop.mini h3,.drop.mini p,.drop.mini .row{display:none}
+.drop.mini #drop-collapse,.drop.mini #drop-reset{display:inline-block}
+/* The breadcrumb above the category chart. Kept to one line and to text
+   tokens -- it is navigation, not data, so it never wears a series colour. */
+/* On a narrow phone the header ran off the right edge: brand, Demo, "Open a
+   statement" and the theme switch do not fit in 393px. The demo has its own
+   button in the hero directly below, so it is the one that goes, and the
+   remaining button keeps only its verb. */
+@media (max-width:560px){
+  #btn-demo{display:none}
+  .brand{font-size:14px}
+  .brand .dot{width:19px;height:19px}
+  #btn-open .long{display:none}
+  .bar{padding:9px 12px;gap:8px}
+}
+.crumb{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  margin:-2px 0 10px;font-size:12.5px;color:var(--muted)}
+.crumb .sep{opacity:.6}
+.crumb [aria-current]{color:var(--text-primary);font-weight:600}
+.linky{border:0;background:none;padding:0;font:inherit;color:var(--series-1);
+  cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.linky:hover{opacity:.75}
+.drop.mini{gap:8px}
+.drop.mini > *{flex:none}
+#drop-reset{margin-right:auto}
+
+/* ---------- cards & layout ---------- */
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;
+  padding:15px 16px;box-shadow:var(--shadow)}
+.card h2{font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--text-secondary);display:flex;justify-content:space-between;
+  align-items:center;gap:10px;margin-bottom:11px;font-weight:650;flex-wrap:wrap}
+/* the title should keep its own line before the pill wraps under it */
+.card h2>:first-child{flex:1 1 auto}
+.grid{display:grid;gap:12px}
+.tiles{grid-template-columns:repeat(auto-fit,minmax(158px,1fr))}
+.two{grid-template-columns:1fr}
+.wide{grid-column:1/-1}
+@media(min-width:880px){ .two{grid-template-columns:1fr 1fr} }
+
+.tile .label{font-size:12px;color:var(--muted)}
+.tile .value{font-size:25px;font-weight:680;letter-spacing:-.03em;margin-top:3px}
+.tile .sub{font-size:12px;color:var(--muted);margin-top:3px}
+.delta{font-size:12px;font-weight:600;margin-top:4px;display:flex;align-items:center;gap:4px}
+.up{color:var(--critical)} .down{color:var(--good)} .flat{color:var(--muted)}
+.good{color:var(--good)} .warn{color:var(--warning)} .bad{color:var(--critical)}
+.arrow{font-size:9px}
+
+/* ---------- bars ---------- */
+.barrow{display:grid;grid-template-columns:minmax(96px,1.1fr) 2fr minmax(86px,auto);
+  align-items:center;gap:9px;width:100%;padding:5px 6px;border:0;border-radius:8px;
+  background:transparent;color:inherit;cursor:pointer;text-align:left;font:inherit}
+.barrow:hover{background:var(--surface-2)}
+.barrow.sel{background:var(--surface-2);outline:1.5px solid var(--series-1)}
+.barlabel{font-size:13px;color:var(--text-primary);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.bartrack{background:var(--grid);border-radius:5px;height:14px;display:block}
+.barfill{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--series-1)}
+.barval{text-align:right;font-size:12.5px;color:var(--text-secondary);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* ---------- charts ---------- */
+svg{display:block;width:100%}
+.gridline{stroke:var(--grid);stroke-width:1}
+.axisline{stroke:var(--axis);stroke-width:1}
+.tick{fill:var(--muted);font-size:11px}
+.crosshair{stroke:var(--axis);stroke-width:1;opacity:0;pointer-events:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px;font-size:12.5px;
+  color:var(--text-secondary)}
+.legend i,.tip i{width:9px;height:9px;border-radius:3px;display:inline-block;
+  margin-right:6px;vertical-align:-1px}
+.tip{position:fixed;pointer-events:none;opacity:0;transition:opacity .1s;z-index:90;
+  background:var(--surface-1);border:1px solid var(--border);border-radius:9px;
+  padding:8px 11px;font-size:12.5px;color:var(--text-primary);box-shadow:var(--shadow);
+  max-width:280px}
+.tip b{display:block;margin-bottom:3px}
+.donut{max-width:190px;margin:0 auto}
+.donutkey{margin-top:10px;display:grid;gap:5px}
+.donutkey div{display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+  gap:8px;font-size:13px}
+.donutkey .sw{width:10px;height:10px;border-radius:3px}
+.donutkey .v{color:var(--text-secondary);font-variant-numeric:tabular-nums}
+.donutkey em{color:var(--muted);font-style:normal;margin-left:5px}
+
+/* ---------- tables ---------- */
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted);font-weight:650;padding:6px 8px;border-bottom:1px solid var(--border);
+  white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid var(--grid);color:var(--text-secondary)}
+tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+td.name{color:var(--text-primary)}
+
+/* ---------- insights ---------- */
+.insight{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--grid)}
+.insight:last-child{border-bottom:none}
+.insight .dot2{width:7px;height:7px;border-radius:99px;margin-top:7px;flex:none}
+.insight b{display:block;font-size:13px;color:var(--text-primary)}
+.insight p{margin:1px 0 0;font-size:13px;color:var(--text-secondary)}
+
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;
+  border:1px solid var(--border);color:var(--text-secondary);white-space:nowrap}
+.pill.good{color:var(--good);border-color:var(--good)}
+.pill.warn{color:var(--warning);border-color:var(--warning)}
+.pill.bad{color:var(--critical);border-color:var(--critical)}
+
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{border:1px solid var(--border);background:var(--surface-1);border-radius:99px;
+  padding:5px 12px;font-size:12.5px;white-space:nowrap;cursor:pointer;color:var(--text-secondary)}
+.chip[aria-pressed=true]{background:var(--series-1);border-color:var(--series-1);color:#fff}
+
+.banner{border:1px solid var(--border);background:var(--surface-2);border-radius:12px;
+  padding:11px 14px;font-size:13px;display:flex;gap:10px;align-items:flex-start;
+  margin-bottom:12px}
+.banner.demo{border-color:var(--series-2)}
+footer{border-top:1px solid var(--border);margin-top:34px;padding:18px 16px 40px;
+  color:var(--muted);font-size:12.5px;text-align:center}
+footer p{margin:0 0 5px}
+footer .credit{color:var(--text-secondary)}
+footer .credit b{font-weight:650}
+/* A quiet line under the hero -- present, not shouting. */
+.byline{margin:14px 0 0;font-size:12.5px;color:var(--muted);letter-spacing:.02em}
+.byline b{color:var(--text-secondary);font-weight:650}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ---------- share cards ---------- */
+.sharepick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.shareopts{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden}
+.seg button{border:0;background:var(--surface-1);color:var(--text-secondary);
+  padding:6px 12px;font-size:12.5px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--border)}
+.seg button[aria-pressed=true]{background:var(--series-1);color:#fff}
+.switch{display:inline-flex;align-items:center;gap:7px;font-size:13px;
+  color:var(--text-secondary);cursor:pointer}
+.switch input{width:16px;height:16px;accent-color:var(--series-1)}
+.sharepreview{display:flex;gap:10px;overflow-x:auto;padding:4px 0 10px;
+  scrollbar-width:thin}
+.sharethumb{height:300px;width:auto;flex:none;border-radius:12px;
+  border:1px solid var(--border);background:var(--surface-2)}
+@media(max-width:560px){ .sharethumb{height:220px} }
+
+/* ---------- feedback ---------- */
+.fbgrid{display:grid;gap:10px;grid-template-columns:1fr}
+@media(min-width:620px){ .fbgrid{grid-template-columns:1fr 1fr} }
+#feedback label{display:block;font-size:12.5px;color:var(--text-secondary)}
+#feedback .opt{color:var(--muted);font-weight:400}
+#feedback input,#feedback textarea{font-family:inherit;width:100%;margin-top:4px;padding:9px 11px;
+  border:1px solid var(--border);border-radius:9px;background:var(--surface-2);
+  color:var(--text-primary);font-size:14px;resize:vertical}
+#feedback input:focus,#feedback textarea:focus{outline:2px solid var(--series-1);
+  outline-offset:1px}
+.fbrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:11px}
+
+/* ---------- password dialog ---------- */
+.pwdlg{border:1px solid var(--border);border-radius:14px;background:var(--surface-1);
+  color:var(--text-primary);padding:0;max-width:min(430px,92vw);width:100%;
+  box-shadow:var(--shadow)}
+.pwdlg::backdrop{background:rgba(0,0,0,.55)}
+.pwdlg form{padding:18px 20px 16px}
+.pwdlg h3{font-size:16px;margin:0 0 6px}
+.pwdlg input{width:100%;margin:10px 0 4px;padding:10px 12px;font-size:15px;
+  border:1px solid var(--border);border-radius:9px;background:var(--surface-2);
+  color:var(--text-primary);font-family:inherit}
+.pwdlg input:focus{outline:2px solid var(--series-1);outline-offset:1px}
+.pwdlg .pwnote{font-size:12px;color:var(--text-secondary);background:var(--surface-2);
+  border-radius:9px;padding:9px 11px;margin:10px 0 0;line-height:1.5}
+.pwdlg code{background:var(--surface-2);padding:1px 5px;border-radius:4px;font-size:12px}
+
+/* ---------- column picker ---------- */
+/* Wider than the password dialog because the point of it is seeing the file:
+   the preview scrolls sideways rather than being squeezed to fit. */
+.coldlg{max-width:min(940px,96vw)}
+.colwrap{overflow:auto;max-height:46vh;margin:10px 0 2px;
+  border:1px solid var(--border);border-radius:10px;background:var(--surface-2)}
+.coltable{border-collapse:collapse;font-size:12px;width:max-content;min-width:100%}
+.coltable th{position:sticky;top:0;z-index:1;background:var(--surface-1);
+  padding:6px;border-bottom:1px solid var(--border);text-align:left}
+.coltable th select{font:inherit;font-size:12px;padding:5px 6px;max-width:150px;
+  border:1px solid var(--border);border-radius:7px;
+  background:var(--surface-2);color:var(--text-primary)}
+.coltable td{padding:5px 7px;border-bottom:1px solid var(--border);
+  color:var(--text-secondary);white-space:nowrap}
+.coltable tr:last-child td{border-bottom:0}
+.coldlg .bad{font-size:13px;margin:8px 0 0}
+.coldlg .btn[disabled]{opacity:.5;cursor:not-allowed}
+@media (max-width:640px){
+  .coltable th select{max-width:112px}
+  .colwrap{max-height:40vh}
+}

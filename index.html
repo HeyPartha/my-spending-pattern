@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Spending Pattern — see where your money actually goes</title>
+<meta name="description" content="Drop in a bank statement and see where your money goes. Everything runs inside your browser — your statement is never uploaded anywhere.">
+<meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <button class="brand" id="brand" type="button" title="Back to the start"
+            aria-label="Back to the start"><span class="dot"></span>My Spending Pattern</button>
+    <span class="spacer"></span>
+    <button class="btn sm ghost" id="btn-demo">Demo</button>
+    <button class="btn sm pri" id="btn-open">Open<span class="long"> a statement</span></button>
+    <button class="iconbtn" id="btn-theme" title="Light or dark" aria-label="Switch theme">◐</button>
+  </div>
+</header>
+
+<main>
+  <!-- Landing. Replaced by the analysis once something is loaded. -->
+  <section id="hero" class="hero">
+    <h1>See where your money actually goes.</h1>
+    <p>Drop in a bank statement — the file your bank already gives you — and get
+       a year of your spending sorted, totalled and explained in about a second.</p>
+    <div class="cta">
+      <button class="btn pri" id="hero-open">Open my statement</button>
+      <button class="btn" id="hero-demo">Show me an example first</button>
+    </div>
+    <div class="privacy">🔒 <b>Nothing is uploaded.</b>
+      The file is read inside this page and never leaves your device.</div>
+  </section>
+
+  <section id="dropzone-wrap" style="margin-bottom:14px">
+    <div class="drop" id="drop">
+      <button class="btn sm" id="drop-collapse" hidden>Add another file</button>
+      <!-- Adding a second file merges it with the first, which is what you want
+           for two banks and emphatically not what you want when you have
+           finished with one person's statement and picked up another. Clicking
+           the title does reset it, but nobody discovers that, so it is a
+           button. -->
+      <button class="btn sm ghost" id="drop-reset" hidden>Start over</button>
+      <h3>Drop a statement here</h3>
+      <p>CSV, Excel or PDF, from any bank. Password-protected files are fine —
+         it will ask. You can add several; repeated rows are ignored.</p>
+      <div class="row">
+        <button class="btn pri" id="btn-choose">Choose a file</button>
+        <button class="btn" id="btn-demo2">Use example data</button>
+      </div>
+      <p id="dropnote" class="muted"></p>
+    </div>
+  </section>
+
+  <div id="app" hidden></div>
+</main>
+
+<footer>
+  <p>Built to run entirely in your browser · no account, no upload, no tracking ·
+     <a href="#" id="link-about">how it works</a></p>
+  <p class="credit">Developed by
+     <a href="https://dsandai.com">dsandai.com</a> &ndash; Partha C.
+     <!-- The build stamp is here so a device can be checked at a glance. When
+          a phone and a laptop disagree about how the app behaves, the first
+          question is always whether they are running the same code, and
+          without this there is no way to answer it. Bump it with sw.js. -->
+     <span class="build">build&nbsp;v13</span></p>
+  <p class="credit">Share your feedback at
+     <a href="mailto:helloDSandAI@gmail.com?subject=My%20Spending%20Pattern">helloDSandAI@gmail.com</a></p>
+
+</footer>
+
+<!-- The accept list carries MIME types *and* extensions, and that pairing is
+     the whole point. Extensions alone make Android grey out a .xls it cannot
+     map to a type, which is how the same file opened from one button and not
+     another. No list at all fixes that but offers the camera and photo gallery
+     as sources, which cannot work: a photograph of a statement has no text in
+     it. Both together give a picker showing documents and nothing else.
+     The format is still decided from the file's first bytes, never its name. -->
+<input type="file" id="file" multiple
+       accept="application/pdf,text/csv,text/plain,text/tab-separated-values,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel.sheet.macroEnabled.12,application/octet-stream,.pdf,.csv,.xls,.xlsx,.xlsm,.txt,.tsv">
+
+<!-- Plain scripts, in dependency order. Not modules: modules are blocked on
+     file://, and being able to double-click index.html matters more here than
+     the syntax. -->
+<script src="assets/rules.js"></script>
+<script src="assets/crypto.js"></script>
+<script src="assets/xls.js"></script>
+<script src="assets/pdfread.js"></script>
+<script src="assets/parse.js"></script>
+<script src="assets/analyse.js"></script>
+<script src="assets/charts.js"></script>
+<script src="assets/demo.js"></script>
+<script src="assets/share.js"></script>
+<script src="assets/feedback.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
